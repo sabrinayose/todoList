@@ -1,81 +1,66 @@
 <template>
-  <q-page class="flex flex-center">
+  <q-page class="flex flex-center column">
+    <div class="col" style="margin-top: 50px">
+      <q-btn
+        push
+        style="background: #6488b6; color: white"
+        label="Back"
+        @click="$router.push('/pokemon/')"
+      />
+    </div>
     <q-card
       flat
       bordered
       style="width: 90%; margin-top: 50px; margin-bottom: 50px"
+      class="col q-ma-xs"
     >
-      <div class="row justify-around q-ma-lg">
-        <q-card
-          bordered
-          class="my-card"
-          v-for="data in pokemonDetail"
-          :key="data.name"
-          style="margin-bottom: 20px"
-        >
-          <div class="column">
-            <div class="col">
-              <q-btn
-                flat
-                style="background: #6488b6; color: white; margin-bottom: 20px"
-                label="Back"
-                @click="$router.push('/pokemon')"
-              />
-            </div>
-            <div class="col">
-              <q-card-section style="padding-bottom: 0px">
-                <div class="text-h6">{{ data.name }}</div>
-              </q-card-section>
-            </div>
-            <div class="col justify-center">
-              <q-card-section>
-                <div class="text-subtitle2">Weight : {{ data.weight }}</div>
-                <div class="text-subtitle2">Height : {{ data.height }}</div>
-                <div class="text-subtitle2">
-                  Base Experience : {{ data.base_experience }}
-                </div>
-              </q-card-section>
-            </div>
+      <div class="row q-ma-lg justify-center">
+        <div class="column q-ma-sm">
+          <div class="text-h4 q-ma-md text-bold" style="text-align: center">
+            {{ data.name }}
           </div>
-        </q-card>
-        <!-- <div class="column">
-          <div class="col">
-            <q-btn
-              flat
-              style="background: #6488b6; color: white; margin-bottom: 20px"
-              label="Back"
-              @click="$router.push('/pokemon')"
-            />
+
+          <div class="q-ma-xs" style="text-align: center">
+            <q-img :src="pokemonImg" style="height: 120px; max-width: 130px" />
           </div>
-          <div class="col">
-            <q-card-section style="padding-bottom: 0px">
-              <div class="text-h4"><b>Spearow</b></div>
-            </q-card-section>
-          </div>
-          <div class="col justify-center">
-            <q-card-section>
-              <div class="text-subtitle1">Weight : 20</div>
-              <div class="text-subtitle1">Height : 3</div>
-              <div class="text-subtitle1">Base Experience : 52</div>
-            </q-card-section>
-          </div>
-        </div> -->
+
+          <q-markup-table :separator="separator" flat class="col">
+            <tbody>
+              <tr class="q-tr--no-hover">
+                <td class="text-left">Weight</td>
+                <td class="text-right">{{ data.weight }}</td>
+              </tr>
+              <tr class="q-tr--no-hover">
+                <td class="text-left">Height</td>
+                <td class="text-right">{{ data.height }}</td>
+              </tr>
+              <tr class="q-tr--no-hover">
+                <td class="text-left">Base Experience</td>
+                <td class="text-right">{{ data.base_experience }}</td>
+              </tr>
+            </tbody>
+          </q-markup-table>
+        </div>
       </div>
     </q-card>
   </q-page>
 </template>
 
 <script setup lang="ts">
-import { Pokemon, getPokemonDetail } from '../list/PokemonList';
+import { Pokemon, getPokemonDetail, getPokemonImg } from '../list/PokemonList';
 import { onMounted, ref } from 'vue';
 
-const pokemonDetail = ref<Pokemon[]>([]);
+const separator = 'none';
+
+const data = ref<Pokemon>({} as Pokemon);
+const pokemonImg = ref('');
 const props = defineProps({
   name: String,
 });
 
 onMounted(async () => {
-  pokemonDetail.value = await getPokemonDetail(props.name!);
+  data.value = await getPokemonDetail(props.name!);
+  pokemonImg.value = await getPokemonImg(props.name!);
 });
 
 // console.log('Detail');
