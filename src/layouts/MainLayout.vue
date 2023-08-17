@@ -1,7 +1,7 @@
 <template>
   <q-layout view="lHh Lpr lFf">
     <q-header elevated>
-      <q-toolbar>
+      <q-toolbar style="background: #6488b6; color: white">
         <q-btn
           flat
           dense
@@ -18,25 +18,19 @@
     <q-drawer v-model="leftDrawerOpen" show-if-above bordered>
       <q-list class="q-mt-xl">
         <q-item v-for="data in menus" :key="data.id">
-          <!-- <q-item-section>
-            <q-btn
-              :href="data.url"
-              class="text-black text-h5 text-bold"
-              style="text-decoration: none"
-            >
-              {{ data.title }}
-            </q-btn>
-          </q-item-section> -->
-
-          <router-link
+          <!-- <router-link
             style="text-decoration: none"
             class="text-black"
             :to="data.url"
+          > -->
+          <q-btn
+            flat
+            style="color: black"
+            @click="$router.push(data.url).then(() => $router.go(0))"
           >
-            <q-btn flat style="color: black">
-              {{ data.title }}
-            </q-btn>
-          </router-link>
+            {{ data.title }}
+          </q-btn>
+          <!-- </router-link> -->
         </q-item>
       </q-list>
     </q-drawer>
@@ -65,11 +59,11 @@ const menus = [
   },
   {
     title: 'Pokemon',
-    url: '/pokemon',
+    url: '/pokemon/',
   },
 ];
 
-const leftDrawerOpen = ref(true);
+const leftDrawerOpen = ref(false);
 
 function toggleLeftDrawer() {
   leftDrawerOpen.value = !leftDrawerOpen.value;
