@@ -10,6 +10,25 @@
           <h4 style="text-align: center">
             <b>Pokemon Page</b>
           </h4>
+          <div class="row justify-center q-mb-xl">
+            <div>
+              <q-btn
+                push
+                class="q-mx-md"
+                style="background: #6488b6; color: white"
+              >
+                <q-icon name="arrow_back" @click="onClickPreviousPage" />
+              </q-btn>
+              <q-btn
+                push
+                class="q-mx-md"
+                style="background: #6488b6; color: white"
+              >
+                <q-icon name="arrow_forward" @click="onClickNextPage" />
+              </q-btn>
+            </div>
+            <!-- <div class=""></div> -->
+          </div>
         </div>
 
         <q-card
@@ -32,7 +51,7 @@
               <q-btn flat>
                 <q-icon
                   name="visibility"
-                  @click="$router.push('/pokemon/' + data.name)"
+                  @click="$router.push('/pokemon/detail/' + data.name)"
                 />
                 <!-- <q-icon name="visibility" @click="showDetail(data.name)" /> -->
               </q-btn>
@@ -72,27 +91,52 @@
 <script setup lang="ts">
 import { Pokemon, getPokemonList } from '../list/PokemonList';
 import { onMounted, ref } from 'vue';
+import { useRouter } from 'vue-router';
+
+const props = defineProps({
+  data: String,
+});
+//  eslint-disable-next-line vue/no-setup-props-destructure
+let page = props.data;
+const router = useRouter();
+
+if (page === undefined) {
+  page = '0';
+}
 
 const pokemonData = ref<Pokemon[]>([]);
-const isDetailShown = ref(false);
-
 onMounted(async () => {
-  pokemonData.value = await getPokemonList();
+  pokemonData.value = await getPokemonList(page!);
 });
+// onMounted(async () => {
+//   pokemonData.value = await getPokemonList();
+// });
 
-// function showDetailDialog() {
-//   isDetailShown.value = true;
-// }
+const pageNumber = Number(page!);
+let previousPage = ref((pageNumber - 20).toString());
+let nextPage = ref((pageNumber + 20).toString());
 
-// function hideDetailDialog() {
-//   isDetailShown.value = false;
-// }
+if (page === '0') {
+  previousPage.value = '0';
+}
 
-// function showDetail(name: any) {
-//   showDetailDialog();
-// }
+if (page === '1280') {
+  nextPage.value = '1280';
+}
 
-// function onClose() {
-//   hideDetailDialog();
-// }
+function toPreviousPage() {
+  router.push('/pokemon/'.concat(previousPage.value)).then(() => router.go(0));
+}
+function toNextPage() {
+  router.push('/pokemon/'.concat(nextPage.value)).then(() => router.go(0));
+  console.log(nextPage.value);
+}
+
+function onClickPreviousPage() {
+  toPreviousPage();
+}
+
+function onClickNextPage() {
+  toNextPage();
+}
 </script>
